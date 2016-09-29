@@ -12,6 +12,7 @@
 		E11581F31D9864CD005BDD8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E11581F11D9864CD005BDD8F /* Main.storyboard */; };
 		E11581F51D9864CD005BDD8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E11581F41D9864CD005BDD8F /* Assets.xcassets */; };
 		E11581F81D9864CD005BDD8F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E11581F61D9864CD005BDD8F /* LaunchScreen.storyboard */; };
+		E1D7147D1D9C8B2200B928F1 /* estaConecAInter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D7147C1D9C8B2200B928F1 /* estaConecAInter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		E11581F41D9864CD005BDD8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E11581F71D9864CD005BDD8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E11581F91D9864CD005BDD8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1D7147C1D9C8B2200B928F1 /* estaConecAInter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = estaConecAInter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 				E11581F41D9864CD005BDD8F /* Assets.xcassets */,
 				E11581F61D9864CD005BDD8F /* LaunchScreen.storyboard */,
 				E11581F91D9864CD005BDD8F /* Info.plist */,
+				E1D7147C1D9C8B2200B928F1 /* estaConecAInter.swift */,
 			);
 			path = BuscaLibro;
 			sourceTree = "<group>";
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D7147D1D9C8B2200B928F1 /* estaConecAInter.swift in Sources */,
 				E11581F01D9864CD005BDD8F /* ViewController.swift in Sources */,
 				E11581EE1D9864CD005BDD8F /* AppDelegate.swift in Sources */,
 			);
@@ -286,6 +290,7 @@
 				E11581FE1D9864CD005BDD8F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
