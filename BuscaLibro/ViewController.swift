@@ -62,6 +62,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         */
         
         //vRetorno = vResultado as String
+        if vRetorno == "{}"{
+           vRetorno = "No se encontró el registro con este ISBN. Vuleva a intentarlo!"
+        }
         return (vRetorno)
     }
     
