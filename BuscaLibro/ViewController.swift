@@ -12,6 +12,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var txtResConsulta: UITextView!
     
+    @IBOutlet weak var lblTitulo: UILabel!
+    @IBOutlet weak var lblAutores: UILabel!
+    @IBOutlet weak var pvPortada: UIImageView!
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -22,50 +29,78 @@ class ViewController: UIViewController, UITextFieldDelegate {
         var vTexto = ""
         self.view.endEditing(true)
         vTexto = textField.text!
-        txtResConsulta.text = (fnTraeDatLibro(vTexto))
+        let resConsulta:Array = (fnTraeDatLibro(vTexto))
+        lblTitulo.text = resConsulta[0]
+        lblAutores.text = resConsulta[1]
+        if resConsulta[2] != "" {
+            if let url = NSURL(string: resConsulta[2]) {
+                if let data = NSData(contentsOfURL: url) {
+                    pvPortada.image = UIImage(data: data)
+                }
+            }
+        }else{
+           //No se cuenta con la portada de este libro
+        }
+        
+        
+        //txtResConsulta.text = (fnTraeDatLibro(vTexto))
         return true
         
     }
     
-    func fnTraeDatLibro(pTexto : String) -> String {
-        var vResultado : NSString = ""
+    func fnTraeDatLibro(pTexto : String) -> [String] {
         var vRetorno : String = ""
+        var vautores : String! = ""
+        var urlPorts : String = ""
+        var texto2: String = ""
         let vText = pTexto
         let urls =  "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:" + vText
         let url = NSURL(string: urls)
         
         if Reachability.isConnectedToNetwork() == true {
             let datos:NSData? = NSData(contentsOfURL: url!)
-            let texto2 = NSString(data:datos!, encoding:NSUTF8StringEncoding)
-            vRetorno = texto2 as! String
+            //let texto2 = NSString(data:datos!, encoding:NSUTF8StringEncoding)
+            //
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(datos!, options: NSJSONReadingOptions.MutableLeaves)
+                let dico1 = json as! NSDictionary
+                let dico2 = dico1["ISBN:"+vText]
+                
+                if let dicoAutores = dico2!["authors"] as? [AnyObject] {
+                    for autores in dicoAutores {
+                        if (vautores != "") {
+                                       vautores=vautores+","+String(autores["name"]!!)
+                                     }
+                                   else{
+                                       vautores = String(autores["name"]!!)
+                                     }
+                    }
+                }
+                do{
+                    let dicoPortadas = try dico2!["cover"] as! NSDictionary
+                    urlPorts = String(dicoPortadas["medium"]!)
+                    //urlPorts = String(dicoPort!)
+                }
+                catch{
+                    urlPorts=""
+                }
+                texto2 = dico2!["title"] as! NSString as String
+                
+            }
+            catch _ {
+            }
+            
+            vRetorno = texto2
+            
         } else {
             fnMuestraAlerta()
             vRetorno = "Vuelva a intentarlo por favor!"
         }
         
-        /*let sesion = NSURLSession.sharedSession()
-        let bloque = { (datos: NSData?, resp : NSURLResponse?, error : NSError?) -> Void in let texto = NSString(data: datos!, encoding: NSUTF8StringEncoding)
-            
-            vResultado = texto!
-            //self.txtResConsulta.text = texto
-        }
-        let dt = sesion.dataTaskWithURL(url!, completionHandler: bloque)
-            dt.resume()
-        */
-        
-        /*
-        let task = NSURLSession.sharedSession().dataTaskWithURL(url!){(data, response, error) in // encodes the raw data into UTF8 string data. println(NSString(data: data, encoding:NSUTF8StringEncoding))
-        }
-        // “Resume” the NSURL session. Data comes from remote site.
-        task.resume()
-        self.txtResConsulta.text = String(task.response)
-        */
-        
-        //vRetorno = vResultado as String
         if vRetorno == "{}"{
            vRetorno = "No se encontró el registro con este ISBN. Vuleva a intentarlo!"
         }
-        return (vRetorno)
+        return ([texto2,vautores,urlPorts])
     }
     
     
