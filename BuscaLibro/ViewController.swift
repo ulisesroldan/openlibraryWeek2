@@ -10,13 +10,10 @@ import UIKit
 
 class ViewController: UIViewController, UITextFieldDelegate {
 
-    @IBOutlet weak var txtResConsulta: UITextView!
     
     @IBOutlet weak var lblTitulo: UILabel!
     @IBOutlet weak var lblAutores: UILabel!
     @IBOutlet weak var pvPortada: UIImageView!
-    
-    
     
     
     override func viewDidLoad() {
@@ -31,7 +28,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         vTexto = textField.text!
         let resConsulta:Array = (fnTraeDatLibro(vTexto))
         lblTitulo.text = resConsulta[0]
-        lblAutores.text = resConsulta[1]
+        lblAutores.text = "Autor(es): " + resConsulta[1]
         if resConsulta[2] != "" {
             if let url = NSURL(string: resConsulta[2]) {
                 if let data = NSData(contentsOfURL: url) {
@@ -40,6 +37,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             }
         }else{
            //No se cuenta con la portada de este libro
+           pvPortada.image = nil
         }
         
         
@@ -52,20 +50,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
         var vRetorno : String = ""
         var vautores : String! = ""
         var urlPorts : String = ""
-        var texto2: String = ""
+        var vTitulo: String = ""
         let vText = pTexto
         let urls =  "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:" + vText
         let url = NSURL(string: urls)
+        var dicoPortadas:NSDictionary! = nil
         
         if Reachability.isConnectedToNetwork() == true {
             let datos:NSData? = NSData(contentsOfURL: url!)
-            //let texto2 = NSString(data:datos!, encoding:NSUTF8StringEncoding)
-            //
             do {
                 let json = try NSJSONSerialization.JSONObjectWithData(datos!, options: NSJSONReadingOptions.MutableLeaves)
                 let dico1 = json as! NSDictionary
+                if json.count != 0 {
                 let dico2 = dico1["ISBN:"+vText]
                 
+                vTitulo = dico2!["title"] as! NSString as String
                 if let dicoAutores = dico2!["authors"] as? [AnyObject] {
                     for autores in dicoAutores {
                         if (vautores != "") {
@@ -77,20 +76,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     }
                 }
                 do{
-                    let dicoPortadas = try dico2!["cover"] as! NSDictionary
-                    urlPorts = String(dicoPortadas["medium"]!)
-                    //urlPorts = String(dicoPort!)
+                    if let dicoPortadas = dico2!["cover"] as? NSDictionary {
+                       urlPorts = String(dicoPortadas["medium"]!)
+                    }else{
+                        urlPorts = ""
+                    }
+                  }
                 }
-                catch{
-                    urlPorts=""
+                else{
+                    vTitulo = "No localizado"
                 }
-                texto2 = dico2!["title"] as! NSString as String
-                
             }
             catch _ {
             }
             
-            vRetorno = texto2
+            vRetorno = vTitulo
             
         } else {
             fnMuestraAlerta()
@@ -100,7 +100,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         if vRetorno == "{}"{
            vRetorno = "No se encontró el registro con este ISBN. Vuleva a intentarlo!"
         }
-        return ([texto2,vautores,urlPorts])
+        if (vautores == ""){
+            vautores = " No se localizaron"
+        }
+
+        return ([vTitulo,vautores,urlPorts])
     }
     
     
